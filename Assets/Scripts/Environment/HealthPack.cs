@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class ObjectMover : MonoBehaviour
+public class HealthPack : MonoBehaviour
 {
     void Update()
     {
-        // Move left toward the player
+        // Movement: Match the game speed
         transform.Translate(Vector2.left * GameManager.GlobalSpeed * Time.deltaTime);
 
-        // Destroy the object once it's well off-screen to save memory
+        // Requirement 3: Destroy shortly after the player goes past
         if (transform.position.x < -15f)
         {
             Destroy(gameObject);

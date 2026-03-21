@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 3
   tags:
   - Goal
+  - Obstacle
+  - HealthPack
+  - Enemy
+  - Projectile
   layers:
   - Default
   - TransparentFX
