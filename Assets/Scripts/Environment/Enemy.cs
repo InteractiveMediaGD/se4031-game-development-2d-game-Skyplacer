@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public int scoreValue = 10;
+    public int scoreValue = 5;
     
     void Update()
     {

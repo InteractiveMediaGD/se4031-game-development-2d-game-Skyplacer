@@ -1,30 +1,20 @@
 using UnityEngine;
-using UnityEngine.UI; // Required for the Slider/UI
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Health Settings")]
     public int maxHealth = 100;
     public int currentHealth;
+    public Slider healthBar;
+    public Image fillImage;
 
     [Header("UI Reference")]
-    public Slider healthBar; // Drag your UI Slider here in the Inspector
-
-    private PlayerController playerMovement;
+    public GameObject gameOverPanel; // Drag the GameOverPanel here in Inspector
 
     void Start()
     {
-        playerMovement = GetComponent<PlayerController>();
-        ResetHealth();
-    }
-
-    public void ResetHealth()
-    {
         currentHealth = maxHealth;
         UpdateUI();
-        
-        // Ensure player can move again if they were stopped
-        if(playerMovement != null) playerMovement.enabled = true;
     }
 
     public void TakeDamage(int damage)
@@ -41,28 +31,31 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(int amount)
     {
+        // Don't heal if already at max (Assignment Rule 3)
+        if (currentHealth >= maxHealth) return;
+
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         UpdateUI();
+    }
+
+    void Die()
+    {
+        // Show the Game Over screen
+        if (gameOverPanel != null) gameOverPanel.SetActive(true);
+
+        // Stop the game movement
+        Time.timeScale = 0; // Freezes physics and time
+        GetComponent<PlayerController>().enabled = false;
     }
 
     void UpdateUI()
     {
         if (healthBar != null)
         {
-            healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
+            float healthPercent = (float)currentHealth / maxHealth;
+            fillImage.color = Color.Lerp(Color.red, Color.green, healthPercent);
         }
-    }
-
-    void Die()
-    {
-        Debug.Log("Player is out of health!");
-        // Requirement 1: Stop the player
-        playerMovement.enabled = false;
-        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
-        GetComponent<Rigidbody2D>().simulated = false; // "Freezes" them in place
-        
-        // You would typically trigger a Game Over screen here
     }
 }

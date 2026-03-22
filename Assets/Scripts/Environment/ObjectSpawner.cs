@@ -1,85 +1,96 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
-public class ObjectSpawner : MonoBehaviour
+public class PatternSpawner : MonoBehaviour
 {
-    [Header("Item Prefabs")]
+    [Header("Prefabs")]
+    public GameObject gatePrefab;
+    public GameObject ceilingPillarPrefab;
+    public GameObject floorPillarPrefab;
     public GameObject enemyPrefab;
     public GameObject healthPackPrefab;
 
-    [Header("Obstacle Variations")]
-    public GameObject gatePrefab;           // Top + Bottom + ScoreZone
-    public GameObject ceilingPillarPrefab;  // Top + ScoreZone
-    public GameObject floorPillarPrefab;    // Bottom + ScoreZone
-
-    [Header("Spawn Settings")]
-    public float spawnRate = 2f; 
-    public float minY = -4.5f;   // Position for Floor Pillars
-    public float maxY = 4.5f;    // Position for Ceiling Pillars
+    [Header("Settings")]
+    public float timeBetweenWaves = 3f;
+    public float objectSpacing = 1.5f; // Distance between objects in a wave
     
-    private float nextSpawnTime;
+    [Tooltip("Set this to the Y position of your Floor")]
+    public float minY = -4.5f;         
+    [Tooltip("Set this to the Y position of your Ceiling")]
+    public float maxY = 4.5f;          
 
-    void Update()
+    void Start()
     {
-        // Requirement 6: Speed scaling
-        float currentSpawnRate = spawnRate / (GameManager.GlobalSpeed / 5f);
+        StartCoroutine(SpawnLoop());
+    }
 
-        if (Time.time >= nextSpawnTime)
+    IEnumerator SpawnLoop()
+    {
+        while (true)
         {
-            SpawnObject();
-            nextSpawnTime = Time.time + currentSpawnRate;
+            // Pick a random pattern
+            int patternType = Random.Range(0, 3);
+
+            switch (patternType)
+            {
+                case 0: yield return StartCoroutine(SpawnCorridorWave()); break;
+                case 1: yield return StartCoroutine(SpawnSlalomWave()); break;
+                case 2: yield return StartCoroutine(SpawnEnemyAmbush()); break;
+            }
+
+            yield return new WaitForSeconds(timeBetweenWaves / (GameManager.GlobalSpeed / 5f));
         }
     }
 
-    void SpawnObject()
+    // PATTERN 1: A series of gates that stay at the same height
+    IEnumerator SpawnCorridorWave()
     {
-        float chance = Random.value; 
+        // Buffer the range by 2 so the hole doesn't spawn partially inside the floor/ceiling
+        float targetY = Random.Range(minY + 2f, maxY - 2f);
+        int count = Random.Range(3, 6);
 
-        // 1. Handle Health Packs (15% chance)
-        if (chance < 0.15f) 
+        for (int i = 0; i < count; i++)
         {
-            SpawnAtRandomHeight(healthPackPrefab);
-        }
-        // 2. Handle Enemies (30% chance)
-        else if (chance < 0.45f) 
-        {
-            SpawnAtRandomHeight(enemyPrefab);
-        }
-        // 3. Handle Obstacles (55% chance)
-        else 
-        {
-            SpawnObstacleVariation();
+            Instantiate(gatePrefab, new Vector3(transform.position.x, targetY, 0), Quaternion.identity);
+            yield return new WaitForSeconds(objectSpacing / GameManager.GlobalSpeed);
         }
     }
 
-    void SpawnAtRandomHeight(GameObject prefab)
+    // PATTERN 2: Alternating Top and Bottom pillars (slalom style)
+    IEnumerator SpawnSlalomWave()
     {
-        float randomY = Random.Range(minY + 1f, maxY - 1f); // Keep items away from very edges
-        Instantiate(prefab, new Vector3(transform.position.x, randomY, 0), Quaternion.identity);
+        int count = Random.Range(4, 8);
+        for (int i = 0; i < count; i++)
+        {
+            GameObject prefab = (i % 2 == 0) ? ceilingPillarPrefab : floorPillarPrefab;
+            
+            // USE THE MIN AND MAX Y VARIABLES HERE
+            float yPos = (i % 2 == 0) ? maxY : minY;
+
+            Instantiate(prefab, new Vector3(transform.position.x, yPos, 0), Quaternion.identity);
+            yield return new WaitForSeconds(objectSpacing / GameManager.GlobalSpeed);
+        }
     }
 
-    void SpawnObstacleVariation()
+    // PATTERN 3: Enemies mixed with a Health Pack
+    IEnumerator SpawnEnemyAmbush()
     {
-        float obstacleChance = Random.value;
-        GameObject selectedPrefab;
-        float spawnY;
+        int count = Random.Range(3, 5);
+        for (int i = 0; i < count; i++)
+        {
+            // Buffer by 1 so enemies don't spawn half-inside the walls
+            float y = Random.Range(minY + 1f, maxY - 1f);
+            Instantiate(enemyPrefab, new Vector3(transform.position.x, y, 0), Quaternion.identity);
+            
+            // 20% chance to sneak a health pack in the middle
+            if (Random.value < 0.2f) 
+            {
+                float healthY = Random.Range(minY + 1f, maxY - 1f);
+                Instantiate(healthPackPrefab, new Vector3(transform.position.x + 2f, healthY, 0), Quaternion.identity);
+            }
 
-        if (obstacleChance < 0.4f) // 40% chance for a Gate
-        {
-            selectedPrefab = gatePrefab;
-            // Keep the "hole" in the reachable middle area (Requirement 2)
-            spawnY = Random.Range(-2f, 2f); 
+            yield return new WaitForSeconds(objectSpacing / GameManager.GlobalSpeed);
         }
-        else if (obstacleChance < 0.7f) // 30% chance for Ceiling Pillar
-        {
-            selectedPrefab = ceilingPillarPrefab;
-            spawnY = maxY; // Pin to the top
-        }
-        else // 30% chance for Floor Pillar
-        {
-            selectedPrefab = floorPillarPrefab;
-            spawnY = minY; // Pin to the bottom
-        }
-
-        Instantiate(selectedPrefab, new Vector3(transform.position.x, spawnY, 0), Quaternion.identity);
     }
 }

@@ -27,15 +27,24 @@ public class PlayerCollision : MonoBehaviour
         {
             if (scoreSystem != null)
             {
-                scoreSystem.AddScore(1);
+                scoreSystem.AddScore(10);
             }
         }
 
         // 3. Health Packs (Requirement 3)
         if (other.CompareTag("HealthPack"))
         {
-            healthSystem.Heal(20);
-            Destroy(other.gameObject); // Destroyed upon collision
+            // Only pick up if health is NOT full
+            if (healthSystem.currentHealth < healthSystem.maxHealth)
+            {
+                healthSystem.Heal(25);
+                Destroy(other.gameObject); 
+                Debug.Log("Health Restored!");
+            }
+            else
+            {
+                Debug.Log("Health is already full! Leaving health pack.");
+            }
         }
 
         // 4. Enemies (Requirement 5)
