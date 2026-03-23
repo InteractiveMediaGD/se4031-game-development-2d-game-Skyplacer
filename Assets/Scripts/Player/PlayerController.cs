@@ -5,49 +5,65 @@ public class PlayerController : MonoBehaviour
     [Header("Movement Settings")]
     public float upwardForce = 15f;
     private Rigidbody2D rb;
+    private Animator anim;
+
+    [Header("Ground Detection")]
+    public Transform groundCheck;
+    public float checkRadius = 0.2f;
+    public LayerMask whatIsGround;
+    private bool isGrounded;
 
     [Header("Shooting Settings")]
-    public GameObject projectilePrefab;
-    public Transform muzzlePoint; // Assign a child object of the player here
+    public GameObject projectilePrefab; // Assign your laser prefab here
+    public Transform muzzlePoint;      // A child object at the player's gun tip
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
     }
 
     void Update()
     {
-        // 1. Jetpack Logic (Hold to fly)
-        if (Input.GetMouseButton(1) || Input.GetKey(KeyCode.Space)) 
+        // 1. Ground Detection
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
+
+        // 2. Jetpack Input (Thrusting)
+        bool isThrusting = Input.GetKey(KeyCode.Space) || Input.GetMouseButton(1);
+        if (isThrusting)
         {
             ApplyThrust();
         }
 
-        // 2. Shooting Logic (Requirement 4: Left click to shoot)
+        // 3. Shooting Input (Requirement 4: Left Mouse Click)
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
         }
+
+        // 4. Animation Logic
+        UpdateAnimations(isThrusting);
     }
 
     void ApplyThrust()
     {
-        // Resets velocity for a "snappier" feel, or just AddForce for momentum
+        // Upward movement logic
         rb.linearVelocity = new Vector2(0, upwardForce);
     }
 
     void Shoot()
     {
-        Debug.Log("Shoot Button Pressed");
-
         if (projectilePrefab != null && muzzlePoint != null)
         {
-            // Create the projectile at the muzzle position
-            Instantiate(projectilePrefab, muzzlePoint.position, Quaternion.identity);
+            // Create the laser at the gun tip's position and rotation
+            Instantiate(projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
         }
-        else
-        {
-            Debug.LogError("Hey! You forgot to assign the Prefab or MuzzlePoint in the Inspector!");
-        }
+    }
+
+    void UpdateAnimations(bool isThrusting)
+    {
+        // Parameter names must match your Animator Controller exactly
+        anim.SetBool("isFloating", isThrusting);
+        anim.SetBool("isGrounded", isGrounded);
     }
 }
