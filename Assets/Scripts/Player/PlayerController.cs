@@ -16,11 +16,30 @@ public class PlayerController : MonoBehaviour
     [Header("Shooting Settings")]
     public GameObject projectilePrefab; // Assign your laser prefab here
     public Transform muzzlePoint;      // A child object at the player's gun tip
+    public AudioClip shootSound;
+    public AudioClip jetpackSound;
+    public AudioClip footstepSound;
+    private AudioSource shootSource;    // For one-off laser sounds
+    private AudioSource jetpackSource;  // For looping thrust sound
+    private AudioSource footstepSource;
+    public float fadeSpeed = 5f; // How fast the sound fades in/out
+    private float targetJetpackVolume = 0.5f;
+
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+
+        shootSource = gameObject.AddComponent<AudioSource>();
+        
+        jetpackSource = gameObject.AddComponent<AudioSource>();
+        jetpackSource.clip = jetpackSound;
+        jetpackSource.loop = true; // Essential for continuous sounds
+
+        footstepSource = gameObject.AddComponent<AudioSource>();
+        footstepSource.clip = footstepSound;
+        footstepSource.loop = true;
     }
 
     void Update()
@@ -43,6 +62,7 @@ public class PlayerController : MonoBehaviour
 
         // 4. Animation Logic
         UpdateAnimations(isThrusting);
+        HandleContinuousSounds(isThrusting);
     }
 
     void ApplyThrust()
@@ -57,6 +77,45 @@ public class PlayerController : MonoBehaviour
         {
             // Create the laser at the gun tip's position and rotation
             Instantiate(projectilePrefab, muzzlePoint.position, muzzlePoint.rotation);
+
+            if (shootSound != null)
+            {
+                shootSource.PlayOneShot(shootSound, 0.5f);
+            }
+        }
+    }
+
+    void HandleContinuousSounds(bool isThrusting)
+    {
+        // 1. Jetpack Sound Logic
+        if (isThrusting)
+        {
+            if (!jetpackSource.isPlaying) jetpackSource.Play();
+            
+            // Gradually increase volume to max
+            jetpackSource.volume = Mathf.MoveTowards(jetpackSource.volume, targetJetpackVolume, fadeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            // Gradually decrease volume to 0
+            jetpackSource.volume = Mathf.MoveTowards(jetpackSource.volume, 0, fadeSpeed * Time.deltaTime);
+            
+            // Only stop the source once it's completely silent
+            if (jetpackSource.volume <= 0 && jetpackSource.isPlaying)
+            {
+                jetpackSource.Stop();
+            }
+        }
+
+        // 2. Footstep Sound Logic 
+        // We play footsteps if on ground AND NOT thrusting
+        if (isGrounded && !isThrusting && !footstepSource.isPlaying)
+        {
+            footstepSource.Play();
+        }
+        else if ((!isGrounded || isThrusting) && footstepSource.isPlaying)
+        {
+            footstepSource.Stop();
         }
     }
 

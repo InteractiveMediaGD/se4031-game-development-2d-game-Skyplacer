@@ -3,6 +3,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int scoreValue = 5;
+    public GameObject explosionPrefab;
+    public AudioClip explosionSound;
     
     void Update()
     {
@@ -21,6 +23,15 @@ public class Enemy : MonoBehaviour
         // Requirement 5: Destroyed on collision with projectiles
         if (other.CompareTag("Projectile")) 
         {
+            if (explosionPrefab != null)
+            {
+                Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+            }
+
+            if (explosionSound != null)
+            {
+                AudioSource.PlayClipAtPoint(explosionSound, transform.position, 1.0f);
+            }
             // Requirement 5: Increase score on destruction by projectile
             FindFirstObjectByType<ScoreManager>().AddScore(scoreValue);
             
