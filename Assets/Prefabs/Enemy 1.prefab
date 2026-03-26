@@ -150,6 +150,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreValue: 10
+  isTracer: 1
+  tracerSpeedMultiplier: 1.2
   explosionPrefab: {fileID: 7067205894040006855, guid: 193969d8ce716824cae34f20f718ad18, type: 3}
   explosionSound: {fileID: 8300000, guid: 0012bc54997e115448142187050eb30d, type: 3}
 --- !u!50 &7753190873772119722
