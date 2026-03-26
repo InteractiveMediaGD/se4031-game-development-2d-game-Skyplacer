@@ -9,8 +9,7 @@ public class PlayerHealth : MonoBehaviour
     public Slider healthBar;
     public Image fillImage;
 
-    [Header("UI Reference")]
-    public GameObject gameOverPanel; // Drag the GameOverPanel here in Inspector
+    [Header("Feedback UI")]
     public TextMeshProUGUI warningText;
     public float flashSpeed = 8f;
 
@@ -21,44 +20,39 @@ public class PlayerHealth : MonoBehaviour
         UpdateUI();
     }
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateUI();
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
-    }
-
-    public void Heal(int amount)
-    {
-        // Don't heal if already at max (Assignment Rule 3)
-        if (currentHealth >= maxHealth) return;
-
-        currentHealth += amount;
-        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        UpdateUI();
-    }
-
-    void Die()
-    {
-        // Show the Game Over screen
-        if (gameOverPanel != null) gameOverPanel.SetActive(true);
-
-        // Stop the game movement
-        Time.timeScale = 0; // Freezes physics and time
-        GetComponent<PlayerController>().enabled = false;
-    }
-
     void Update()
     {
         if (currentHealth > 0 && (float)currentHealth / maxHealth < 0.3f)
         {
             FlashWarning();
         }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        if (currentHealth <= 0) return;
+
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateUI();
+
+        if (currentHealth <= 0)
+        {
+            int finalScore = 0;
+            ScoreManager sm = FindFirstObjectByType<ScoreManager>();
+            if (sm != null) finalScore = sm.currentScore;
+
+            // Hand everything over to the GameManager
+            GameManager.Instance.TriggerGameOver(gameObject, finalScore);
+        }
+    }
+
+    public void Heal(int amount)
+    {
+        if (currentHealth >= maxHealth) return;
+        currentHealth += amount;
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        UpdateUI();
     }
 
     void UpdateUI()
@@ -70,18 +64,14 @@ public class PlayerHealth : MonoBehaviour
             fillImage.color = Color.Lerp(Color.red, Color.green, healthPercent);
 
             if (warningText != null)
-            {
                 warningText.gameObject.SetActive(healthPercent < 0.3f);
-            }
         }
     }
 
     void FlashWarning()
     {
         if (warningText == null) return;
-
-        // Use a Sine wave to oscillate alpha between 0.2 and 1.0
-        float alpha = (Mathf.Sin(Time.time * flashSpeed) + 1f) / 2f;
+        float alpha = (Mathf.Sin(Time.unscaledTime * flashSpeed) + 1f) / 2f;
         warningText.color = new Color(1f, 0f, 0f, Mathf.Clamp(alpha, 0.2f, 1f));
     }
 }
