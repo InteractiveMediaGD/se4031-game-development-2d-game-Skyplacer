@@ -8,7 +8,7 @@ public class PatternSpawner : MonoBehaviour
     public GameObject gatePrefab;
     public GameObject ceilingPillarPrefab;
     public GameObject floorPillarPrefab;
-    public GameObject enemyPrefab;
+    public GameObject[] enemyPrefabs;
     public GameObject healthPackPrefab;
 
     [Header("Settings")]
@@ -81,7 +81,13 @@ public class PatternSpawner : MonoBehaviour
         {
             // Buffer by 1 so enemies don't spawn half-inside the walls
             float y = Random.Range(minY + 1f, maxY - 1f);
-            Instantiate(enemyPrefab, new Vector3(transform.position.x, y, 0), Quaternion.identity);
+            if (enemyPrefabs != null && enemyPrefabs.Length > 0)
+            {
+                int randomIndex = Random.Range(0, enemyPrefabs.Length);
+                GameObject randomEnemy = enemyPrefabs[randomIndex];
+
+                Instantiate(randomEnemy, new Vector3(transform.position.x, y, 0), Quaternion.identity);
+            }
             
             // 20% chance to sneak a health pack in the middle
             if (Random.value < 0.2f) 

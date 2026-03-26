@@ -872,7 +872,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: -4.5, z: 0}
-  m_LocalScale: {x: 25, y: 0.5, z: 1}
+  m_LocalScale: {x: 5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -915,13 +915,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 5.6, y: 0.74}
+    newSize: {x: 14.44, y: 10.24}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 3}
+  m_Size: {x: 5.5, y: 1.925}
   m_EdgeRadius: 0
 --- !u!212 &742479794
 SpriteRenderer:
@@ -946,7 +946,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -967,12 +967,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.4641509, g: 0.4545176, b: 0.4545176, a: 1}
+  m_Sprite: {fileID: -2902554183024111230, guid: f657f0c151206d548893d7c5aca963d6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 14.44, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1034,13 +1034,13 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 5.6, y: 0.74}
+    newSize: {x: 14.44, y: 10.24}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 5.5, y: 1}
   m_EdgeRadius: 0
 --- !u!212 &878432361
 SpriteRenderer:
@@ -1065,7 +1065,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1086,12 +1086,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.4641509, g: 0.4545176, b: 0.4545176, a: 1}
+  m_Sprite: {fileID: -2902554183024111230, guid: f657f0c151206d548893d7c5aca963d6, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 14.44, y: 10.24}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1107,7 +1107,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 6.6, z: 0}
-  m_LocalScale: {x: 25, y: 0.5, z: 1}
+  m_LocalScale: {x: 5, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1364,7 +1364,9 @@ MonoBehaviour:
   gatePrefab: {fileID: 7858969108331187539, guid: f1321c916b8fd5544bcacd61e2ceba2f, type: 3}
   ceilingPillarPrefab: {fileID: 5975636760606488906, guid: 01354b4c9513a6b4db0fd3e0c319d55f, type: 3}
   floorPillarPrefab: {fileID: 4448122177581230484, guid: 4494258502bdf7e4e8f7d05127041bed, type: 3}
-  enemyPrefab: {fileID: 5248132255922231371, guid: 07797df26b7ce544fb482f7c11f5b0ec, type: 3}
+  enemyPrefabs:
+  - {fileID: 5248132255922231371, guid: 07797df26b7ce544fb482f7c11f5b0ec, type: 3}
+  - {fileID: 5248132255922231371, guid: 9855fc87a89c9474facb93ca5cb5ef8c, type: 3}
   healthPackPrefab: {fileID: 1729303120724749323, guid: 9cc2d603ce417f6408ea613a57a0c5e8, type: 3}
   timeBetweenWaves: 3
   objectSpacing: 6
