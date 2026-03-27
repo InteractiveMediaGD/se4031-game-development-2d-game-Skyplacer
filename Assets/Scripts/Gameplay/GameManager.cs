@@ -16,9 +16,12 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverPanel;
     public TextMeshProUGUI finalScoreText;
     public GameObject playerExplosionPrefab;
+    public Transform playerTransform;
+    public AudioClip explosionSFX;
     public float delayInRealSeconds = 1.5f; 
     public GameObject healthbar;
     public GameObject scoreboard;
+    public bool isGameOver = false;
 
     void Awake()
     {
@@ -40,6 +43,7 @@ public class GameManager : MonoBehaviour
     public void TriggerGameOver(GameObject player, int finalScore)
     {
         // 1. Immediately freeze all movement and physics
+        isGameOver = true;
         Time.timeScale = 0;
 
         // 2. Stop all player sounds (Footsteps, Jetpack)
@@ -63,6 +67,7 @@ public class GameManager : MonoBehaviour
         if (playerExplosionPrefab != null)
         {
             Instantiate(playerExplosionPrefab, deathPosition, Quaternion.identity);
+            AudioSource.PlayClipAtPoint(explosionSFX,playerTransform.position);
         }
 
         // Use 'Realtime' because Time.timeScale is 0

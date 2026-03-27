@@ -44,6 +44,16 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            if (jetpackSource.isPlaying) jetpackSource.Pause();
+            if (footstepSource.isPlaying) footstepSource.Pause();
+            return; // Exit early so no movement or shooting happens
+        }
+
+        jetpackSource.UnPause();
+        footstepSource.UnPause();
+
         // 1. Ground Detection
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, checkRadius, whatIsGround);
 

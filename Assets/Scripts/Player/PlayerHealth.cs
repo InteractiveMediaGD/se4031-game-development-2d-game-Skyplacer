@@ -12,6 +12,8 @@ public class PlayerHealth : MonoBehaviour
     [Header("Feedback UI")]
     public TextMeshProUGUI warningText;
     public float flashSpeed = 8f;
+    public AudioClip damageSFX;
+    public AudioClip healSFX;
 
     void Start()
     {
@@ -34,6 +36,7 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        AudioSource.PlayClipAtPoint(damageSFX, transform.position, 1.0f);
         UpdateUI();
 
         if (currentHealth <= 0)
@@ -52,6 +55,7 @@ public class PlayerHealth : MonoBehaviour
         if (currentHealth >= maxHealth) return;
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        AudioSource.PlayClipAtPoint(healSFX, transform.position, 1.0f);
         UpdateUI();
     }
 
