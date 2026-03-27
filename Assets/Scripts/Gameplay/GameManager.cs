@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         GlobalSpeed += acceleration * Time.deltaTime;
     }
 
-    public void TriggerGameOver(GameObject player, int finalScore)
+    public void TriggerGameOver(GameObject player)
     {
         // 1. Immediately freeze all movement and physics
         isGameOver = true;
@@ -58,10 +58,10 @@ public class GameManager : MonoBehaviour
         player.GetComponent<SpriteRenderer>().enabled = false;
 
         // 4. Start the final sequence
-        StartCoroutine(GameOverSequence(player.transform.position, finalScore));
+        StartCoroutine(GameOverSequence(player.transform.position));
     }
 
-    IEnumerator GameOverSequence(Vector3 deathPosition, int finalScore)
+    IEnumerator GameOverSequence(Vector3 deathPosition)
     {
         // Spawn explosion (Make sure Animator is set to 'Unscaled Time')
         if (playerExplosionPrefab != null)
@@ -73,9 +73,10 @@ public class GameManager : MonoBehaviour
         // Use 'Realtime' because Time.timeScale is 0
         yield return new WaitForSecondsRealtime(delayInRealSeconds);
 
-        if (finalScoreText != null)
+        ScoreManager sm = FindFirstObjectByType<ScoreManager>();
+        if (finalScoreText != null && sm != null)
         {
-            finalScoreText.text = "FINAL SCORE: " + finalScore.ToString();
+            finalScoreText.text = "FINAL SCORE: " + sm.currentScore.ToString();
         }
 
         healthbar.SetActive(false);

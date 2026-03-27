@@ -13,6 +13,8 @@ public class ScoreManager : MonoBehaviour
 
     public void AddScore(int amount)
     {
+        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        
         currentScore += amount;
         UpdateUI();
     }

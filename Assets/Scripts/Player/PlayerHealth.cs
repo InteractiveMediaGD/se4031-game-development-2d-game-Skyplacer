@@ -46,7 +46,7 @@ public class PlayerHealth : MonoBehaviour
             if (sm != null) finalScore = sm.currentScore;
 
             // Hand everything over to the GameManager
-            GameManager.Instance.TriggerGameOver(gameObject, finalScore);
+            GameManager.Instance.TriggerGameOver(gameObject);
         }
     }
 
